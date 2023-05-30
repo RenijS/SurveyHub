@@ -1,0 +1,142 @@
+import React, { useEffect, useState } from "react";
+import Container from "react-bootstrap/esm/Container";
+import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
+import SavedQcard from "./create/SavedQcard";
+import BaseAxios from "../../api/BaseAxios";
+import SurveyInfoCard from "./create/SurveyInfoCard";
+import { useParams } from "react-router-dom";
+import Row from "react-bootstrap/esm/Row";
+import EditQpopup from "./edit/EditQpopup";
+
+export default function EditSurvey({setPopupActive}){
+
+    const {id} = useParams();
+    const [survey, setSurvey] = useState({title:"", description: ""})
+
+    useEffect(()=>{
+        const fetchSurveyData = async () =>{
+            try{
+                const result = await BaseAxios(`/surveys/${id}`);
+                setSurvey({...result.data.data.survey})
+            }catch(err){
+                console.log("Error fetching survey data: ", err);
+            }
+        }
+        fetchSurveyData();
+    },[id])
+
+    //collection of questions
+    const [questions, setQuestions] = useState([])
+
+    const updateQuestions = (index, question) =>{
+        const questionsArr = [...questions];
+        questionsArr[index] = question;
+        setQuestions(questionsArr);
+    }
+
+    useEffect(() => {
+        const fetchSurveyQuestions = async () => {
+            try{
+                const result = await BaseAxios(`/surveys/${id}/questions`);
+                setQuestions([...result.data.questions])
+            }catch(err){
+                console.log("Error fetching survey questions", err);
+            }
+        }
+        fetchSurveyQuestions();
+    }, [id])
+    //question for editing
+    const [question, setQuestion] = useState({questionsArrIndex: "", question: "", type: "", options:["","",""] });
+
+    const handleEditClicked = (data) => {
+        setQuestion({...data})
+        setPopupActive(true);
+    }
+
+    const handleQuestionChange = (e) => {
+        setQuestion((prevData) => {
+            return {...prevData, question:e.target.value}
+        })
+    }
+
+    const resetQuestion = () => {
+        setQuestion({ question: "", type: "", options:["","",""] })
+        setPopupActive(false)
+    }
+
+    const handleAddFields = () => {
+        const values = [...question.options];
+        values.push("");
+        setQuestion(prevData => {
+            return {...prevData, options:values}
+        })
+    }
+
+    //for removing input field
+    const handleRemoveFields = (index) => {
+        const values = [...question.options];
+        if(values.length > 2){
+            values.splice(index,1);
+        setQuestion(prevData => {
+           return {...prevData, options:values}
+        })
+        }
+    }
+
+    const handleOnChangeFields = (e, index) => {
+        const values = [...question.options];
+        values[index] = e.target.value;
+        setQuestion(prevData => {
+            return {...prevData, options:values}
+        })
+    }
+
+    //Using options for min max value of slider
+    //index0 = min, index1 = max
+    const handleMinField = (e) => {
+        const values = [...question.options];
+        values[0] = e.target.value;
+        setQuestion(prevData => {
+            return {...prevData, options:values}
+        })
+    }
+
+    const handleMaxField = (e) => {
+        const values = [...question.options];
+        values[1] = e.target.value;
+        setQuestion(prevData => {
+            return {...prevData, options:values}
+        })
+    }
+
+
+    return (
+        <>
+        <Container className="mt-4">
+            <Card className="mb-3">
+                <Card.Body>
+                    <Card.Title style={{position:"relative"}}>
+                        <SurveyInfoCard survey={survey}/>
+                        {/* Invisible Wall so that inputs are not editable */}
+                        <Row className="invisibleWall" style={{position: "absolute", top: 0, bottom: 0, left: 0, right: 0}}></Row>
+                    </Card.Title>
+                </Card.Body>
+            </Card>
+                    {questions && questions.map((question, index) => {
+                            return <Card className="mb-3" key={question.id}>
+                                        <Card.Body>
+                                            <Card.Title style={{position:"relative"}}>
+                                                <SavedQcard index= {index} question={question}/>
+                                                {/* Invisible Wall so that inputs are not editable */}
+                                                <Row className="invisibleWall" style={{position: "absolute", top: 0, bottom: 0, left: 0, right: 0}}></Row>
+                                            </Card.Title>
+                                            <Card.Title><Button onClick={() => {handleEditClicked({questionsArrIndex: index, ...question})}}>Edit</Button></Card.Title>
+                                        </Card.Body>
+                                    </Card>
+                        })}     
+        </Container>
+        {(question.q !== "" && question.type !== "") && <EditQpopup id={id} updateQuestions={updateQuestions} question={question} handleQuestionChange={handleQuestionChange} resetQuestion={resetQuestion} handleAddFields={handleAddFields} handleRemoveFields={handleRemoveFields} handleOnChangeFields={handleOnChangeFields} handleMinField={handleMinField} handleMaxField={handleMaxField}/>}
+        </>
+    )
+}

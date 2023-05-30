@@ -1,0 +1,20 @@
+#TABLE CREATION QUERIES
+
+#Creating surveys table
+
+CREATE TABLE surveys(
+    id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT
+)
+
+
+#Creating questions table
+
+CREATE TABLE questions (
+    id SERIAL PRIMARY KEY,
+    survey_id INT NOT NULL REFERENCES surveys(id),
+    question TEXT NOT NULL,
+    type VARCHAR(20) NOT NULL,
+    options TEXT[]
+    );
