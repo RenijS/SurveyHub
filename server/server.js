@@ -205,7 +205,7 @@ app.delete('/api/surveys/:id/questions', async (req, res) => {
             status:"success"
         })
     }catch(err) {
-        res.send(400).json({
+        res.status(400).json({
             status: "error",
             error: err
         })
@@ -217,7 +217,7 @@ app.delete('/api/surveys/:id/questions/:qId', async (req, res) => {
     const surveyId = req.params.id;
     const qId = req.params.qId;
     try{
-        const result = await pool.query("DELETE FROM questions WHERE survey_id = $1, id = $2", [surveyId, qId])
+        const result = await pool.query("DELETE FROM questions WHERE survey_id = $1 AND id = $2", [surveyId, qId])
         res.status(200).json({
             status: "success"
         })

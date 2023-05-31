@@ -13,7 +13,7 @@ export default function CreatorPage(props){
 
     const handleDeleteSurvey = async (surveyId, index) => {
         await BaseAxios.delete(`/surveys/${surveyId}/questions`)
-        .then(async (res) => {
+        .then(async () => {
             console.log("All the question are deleted")
             try{
                 const result = await BaseAxios.delete(`/surveys/${surveyId}`)

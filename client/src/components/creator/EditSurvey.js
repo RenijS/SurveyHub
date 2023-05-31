@@ -110,6 +110,19 @@ export default function EditSurvey({setPopupActive}){
         })
     }
 
+    const handleDeleteQuestion = async (qId, index) => {
+        await BaseAxios.delete(`/surveys/${id}/questions/${qId}`)
+            .then(()=>{
+                const questionsArr = [...questions];
+                questionsArr.splice(index, 1);
+                setQuestions(questionsArr);
+                resetQuestion();
+            })
+            .catch((err) => {
+                console.log(err)
+            })
+    }
+
 
     return (
         <>
@@ -136,7 +149,7 @@ export default function EditSurvey({setPopupActive}){
                                     </Card>
                         })}     
         </Container>
-        {(question.q !== "" && question.type !== "") && <EditQpopup id={id} updateQuestions={updateQuestions} question={question} handleQuestionChange={handleQuestionChange} resetQuestion={resetQuestion} handleAddFields={handleAddFields} handleRemoveFields={handleRemoveFields} handleOnChangeFields={handleOnChangeFields} handleMinField={handleMinField} handleMaxField={handleMaxField}/>}
+        {(question.q !== "" && question.type !== "") && <EditQpopup id={id} updateQuestions={updateQuestions} question={question} handleQuestionChange={handleQuestionChange} resetQuestion={resetQuestion} handleAddFields={handleAddFields} handleRemoveFields={handleRemoveFields} handleOnChangeFields={handleOnChangeFields} handleMinField={handleMinField} handleMaxField={handleMaxField} handleDeleteQuestion={handleDeleteQuestion}/>}
         </>
     )
 }

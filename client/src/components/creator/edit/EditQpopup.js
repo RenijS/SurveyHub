@@ -11,7 +11,7 @@ import ChoicesCard from "../create/Qcard/ChoicesCard";
 import BaseAxios from "../../../api/BaseAxios";
 
 
-export default function EditQpopup({id, updateQuestions, question, handleQuestionChange, resetQuestion, handleAddFields, handleRemoveFields, handleOnChangeFields, handleMaxField, handleMinField}){
+export default function EditQpopup({id, updateQuestions, question, handleQuestionChange, resetQuestion, handleAddFields, handleRemoveFields, handleOnChangeFields, handleMaxField, handleMinField, handleDeleteQuestion}){
 
     const handleOnSubmit = async () =>{
         await BaseAxios.put(`/surveys/${id}/questions/${question.id}`, {question: question.question, type: question.type, options: question.options})
@@ -41,14 +41,11 @@ export default function EditQpopup({id, updateQuestions, question, handleQuestio
                         {question.type === "slider" && (
                             <Slider question={question} handleMaxField={handleMaxField} handleMinField={handleMinField}/>
                         )}
-                        <Row>
-                            <Col xs={2}>
-                                <Button variant="primary" className="mt-3" onClick={handleOnSubmit}> Save </Button>
-                            </Col>
-                            <Col>
-                                <Button variant="secondary" className="mt-3" onClick={resetQuestion}> Cancel </Button>  
-                            </Col>
-                        </Row>
+                        <div className="mt-3" style={{display:"flex", flexDirection:"row", gap: "1.5rem"}}>
+                            <Button variant="primary" style={{width:"fit-content"}} onClick={handleOnSubmit}> Save </Button>
+                            <Button variant="warning" style={{width:"fit-content"}} onClick={() => {handleDeleteQuestion(question.id, question.questionsArrIndex)}}>Delete Question</Button>
+                            <Button variant="secondary" style={{width:"fit-content"}} onClick={resetQuestion}> Cancel </Button>  
+                        </div>
                     </Card.Title>)}
             </Card.Body>
         </Card>    
