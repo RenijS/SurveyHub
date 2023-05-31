@@ -10,6 +10,11 @@ app.use(cors());
 
 app.use(express.json());
 
+//testing
+app.get("/api/test", (req, res) => {
+    res.json({msg: "testing"})
+})
+
 //get all surveys
 app.get('/api/surveys', async (req, res) => {
     try{
