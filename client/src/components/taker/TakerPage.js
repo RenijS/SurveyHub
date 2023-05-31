@@ -2,7 +2,6 @@ import React, { useContext } from "react";
 import Container from "react-bootstrap/esm/Container";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Button from 'react-bootstrap/Button';
 import { SurveysContext } from "../../context/SurveysContext";
 import SurveyCard from "../SurveyCard";
 

@@ -9,7 +9,7 @@ import SurveyCard from "../SurveyCard";
 import BaseAxios from "../../api/BaseAxios";
 
 export default function CreatorPage(props){
-    const {surveys, setSurveys, handleRemoveSurvey} = useContext(SurveysContext);
+    const {surveys, handleRemoveSurvey} = useContext(SurveysContext);
 
     const handleDeleteSurvey = async (surveyId, index) => {
         await BaseAxios.delete(`/surveys/${surveyId}/questions`)

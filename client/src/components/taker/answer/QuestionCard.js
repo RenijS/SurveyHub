@@ -19,7 +19,7 @@ export default function QuestionCard(props){
             <Col>
             {props.question.type === "dropdown" && (
                     <>
-                        <DropdownButton id="dropdown-basic-button" title={ props.answers[props.index].answer != "" ? props.answers[props.index].answer : "Choose your answer"}>
+                        <DropdownButton id="dropdown-basic-button" title={ props.answers[props.index].answer !== "" ? props.answers[props.index].answer : "Choose your answer"}>
                             {props.question.options.map((option, index) => {
                                 return <Dropdown.Item key={index} onClick={(e)=>{props.handleAnswersChange(props.index, e, props.question.type)}} value={option}>{option}</Dropdown.Item>
                             })}
