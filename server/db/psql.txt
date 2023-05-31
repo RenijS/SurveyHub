@@ -18,3 +18,13 @@ CREATE TABLE questions (
     type VARCHAR(20) NOT NULL,
     options TEXT[]
     );
+
+#Creating answers table
+
+CREATE TABLE answers (
+    id SERIAL PRIMARY KEY,
+    survey_id INT NOT NULL REFERENCES surveys(id),
+    question_id INT NOT NULL REFERENCES questions(id),
+    answer TEXT NOT NULL,
+	type VARCHAR(20) NOT NULL
+    );
