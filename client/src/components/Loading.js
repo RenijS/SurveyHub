@@ -2,6 +2,8 @@ import React from "react";
 import Spinner from 'react-bootstrap/Spinner';
 import Card from 'react-bootstrap/Card';
 import Container from "react-bootstrap/esm/Container";
+import Alert from 'react-bootstrap/Alert';
+
 
 export default function Loading({loadInfo, setLoadInfo}){
     return (
@@ -15,6 +17,16 @@ export default function Loading({loadInfo, setLoadInfo}){
                             <h5>Please wait</h5>
                         </>
                     }
+                    {loadInfo.status == "success" && (
+                        <Alert key={"success"} variant={"success"}>
+                            Success
+                        </Alert>
+                    )}
+                    {loadInfo.status === "error" &&(
+                        <Alert key={"error"} variant={"error"}>
+                            Error
+                        </Alert>
+                    )}
                     <h5>{loadInfo.msg}</h5>
                 </Card.Body>
             </Card>
