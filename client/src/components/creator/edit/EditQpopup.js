@@ -25,7 +25,7 @@ export default function EditQpopup({id, updateQuestions, question, handleQuestio
     }
 
     return (
-    <Container className="popup">
+    <Container className="popup editContainer">
         <Card className="mt-5 py-2">
             <Card.Body>
                 <Card.Title>Edit Question:</Card.Title>

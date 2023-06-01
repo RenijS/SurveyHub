@@ -19,7 +19,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/surveys/add" element={<CreateSurvey />}/>
-          <Route path='/surveys/:id/edit' element={<EditSurvey setPopupActive={setPopupActive}/>}/>
+          <Route path='/surveys/:id/edit' element={<EditSurvey setPopupActive={setPopupActive} popupActive={popupActive}/>}/>
           <Route path="/surveys/:id/answer" element={<AnswerSurvey />} />
           <Route path='/surveys/:id/analyze' element={<StatsPage />}/>
         </Routes>

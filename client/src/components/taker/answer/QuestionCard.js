@@ -21,7 +21,9 @@ export default function QuestionCard(props){
                     <>
                         <DropdownButton id="dropdown-basic-button" title={ props.answers[props.index].answer !== "" ? props.answers[props.index].answer : "Choose your answer"}>
                             {props.question.options.map((option, index) => {
-                                return <Dropdown.Item key={index} onClick={(e)=>{props.handleAnswersChange(props.index, e, props.question.type)}} value={option}>{option}</Dropdown.Item>
+                                return (
+                                    option != "" && <Dropdown.Item key={index} onClick={(e)=>{props.handleAnswersChange(props.index, e, props.question.type)}} value={option}>{option}</Dropdown.Item>
+                                )
                             })}
                         </DropdownButton>
                     </>
@@ -31,6 +33,7 @@ export default function QuestionCard(props){
                         {props.question.options.map((option, index) => {
                             const isChecked = props.answers[props.index].answer.includes(option);
                                 return (
+                                    option != "" &&
                                     <InputGroup className="mb-3" key={index}>
                                         <InputGroup.Checkbox aria-label="Checkbox for following text input" 
                                             checked={isChecked}
@@ -47,6 +50,7 @@ export default function QuestionCard(props){
                         {props.question.options.map((option, index) => {
                             const isChecked = props.answers[props.index].answer === option;
                             return (
+                                option != "" &&
                                 <InputGroup className="mb-3" key={index}>
                                     <InputGroup.Checkbox aria-label="Checkbox for following text input" 
                                         checked={isChecked}
@@ -59,11 +63,12 @@ export default function QuestionCard(props){
                     </>
                 )}
                 {props.question.type === "slider" && (
+
                     <>
                         <input
                             type="range"
-                            min={props.question.options[0]}
-                            max={props.question.options[1]}
+                            min={props.question.options[0] || 0}
+                            max={props.question.options[1] || 50}
                             className="w-100" 
                             value={props.answers[props.index].answer}
                             onChange={(e) => {props.handleAnswersChange(props.index, e, props.question.type)}}

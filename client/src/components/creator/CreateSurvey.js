@@ -112,9 +112,9 @@ export default function CreateSurvey(){
                     const questionResponse = await BaseAxios.post(
                         `/surveys/${surveyInfo.id}/questions`,
                         {
-                        question: question.q,
-                        type: question.type,
-                        options: question.options,
+                            question: question.q,
+                            type: question.type,
+                            options: question.options,
                         }
                     );
                     console.log("Question added", questionResponse.data);

@@ -9,7 +9,7 @@ import { useParams } from "react-router-dom";
 import Row from "react-bootstrap/esm/Row";
 import EditQpopup from "./edit/EditQpopup";
 
-export default function EditSurvey({setPopupActive}){
+export default function EditSurvey({setPopupActive, popupActive}){
 
     const {id} = useParams();
     const [survey, setSurvey] = useState({title:"", description: ""})
@@ -53,6 +53,19 @@ export default function EditSurvey({setPopupActive}){
         setQuestion({...data})
         setPopupActive(true);
     }
+
+    //for scrolling effect after edit is clicked
+    useEffect(()=>{
+        //edit popup container
+        let editContainer = document.querySelector(".editContainer");
+        if(editContainer){
+            let offsetTop = editContainer.offsetTop;
+            window.scrollTo({
+                top: offsetTop,
+                behavior: "smooth"
+            })
+        }
+    }, [question, popupActive])
 
     const handleQuestionChange = (e) => {
         setQuestion((prevData) => {
