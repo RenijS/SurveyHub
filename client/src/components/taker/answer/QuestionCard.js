@@ -38,7 +38,10 @@ export default function QuestionCard(props){
                                         <InputGroup.Checkbox aria-label="Checkbox for following text input" 
                                             checked={isChecked}
                                             value ={option}
-                                            onChange={(e) => props.handleAnswersChange(props.index, e, props.question.type)}/>
+                                            onChange={(e) => {
+                                                if(e.target.checked){ props.handleAnswersChange(props.index, e, props.question.type)}
+                                                else{props.handleAnswersRemove(props.index, option)}
+                                                }}/>
                                         <Form.Control aria-label="Text input with checkbox" value ={option} readOnly/>
                                     </InputGroup>
                                 )

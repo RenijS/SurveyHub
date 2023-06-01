@@ -40,7 +40,7 @@ export default function AnswerSurvey(){
 
     const [answers, setAnswers] = useState([]);
 
-    const handleAnswersChange = (index, event, type) =>{
+    const handleAnswersChange = (index, event, type) => {
         const ansArr = [...answers];
         const ans = ansArr[index];
         if(type === "checkbox"){
@@ -50,6 +50,15 @@ export default function AnswerSurvey(){
         } else{
             ans.answer = event.target.getAttribute('value');
         }
+        ansArr[index] = ans;
+        setAnswers(ansArr);
+        console.log(ansArr)
+    }
+
+    const handleAnswersRemove = (index, option) => {
+        const ansArr = [...answers];
+        const ans = ansArr[index]
+        ans.answer = ans.answer.split(`,${option}`).join("");
         ansArr[index] = ans;
         setAnswers(ansArr);
     }
@@ -132,7 +141,7 @@ export default function AnswerSurvey(){
                             return <Card className="mb-3" key={question.id}>
                                         <Card.Body>
                                             <Card.Title style={{position:"relative"}}>
-                                                <QuestionCard index= {index} question={question} answers={answers} handleAnswersChange={handleAnswersChange}/>
+                                                <QuestionCard index= {index} question={question} answers={answers} handleAnswersChange={handleAnswersChange} handleAnswersRemove={handleAnswersRemove}/>
                                             </Card.Title>
                                         </Card.Body>
                                     </Card>
