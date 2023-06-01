@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Container from "react-bootstrap/esm/Container";
 import Card from 'react-bootstrap/Card';
 import Row from 'react-bootstrap/Row';
@@ -8,10 +8,12 @@ import { useParams } from "react-router-dom";
 import QuestionCard from "./answer/QuestionCard";
 import Button from "react-bootstrap/esm/Button";
 import {useNavigate} from 'react-router-dom'
+import { LoadContext } from "../../context/LoadContext";
 
 
 export default function AnswerSurvey(){
     const {id} = useParams();
+    const {setLoadInfo} = useContext(LoadContext)
     const [survey, setSurvey] = useState({title:"", description: ""})
 
     const navigate = useNavigate();
@@ -19,10 +21,15 @@ export default function AnswerSurvey(){
     useEffect(()=>{
         const fetchSurveyData = async () =>{
             try{
+                setLoadInfo({status: "loading", msg: "Retriving survey data..."})
                 const result = await BaseAxios(`/surveys/${id}`);
                 setSurvey({...result.data.data.survey})
             }catch(err){
                 console.log("Error fetching survey data: ", err);
+                setLoadInfo({status: "error", msg: "Error retriving data"})
+                setTimeout(()=>{
+                    setLoadInfo({status: "closed", msg: ""})
+                }, 800)
             }
         }
         fetchSurveyData();
@@ -45,8 +52,6 @@ export default function AnswerSurvey(){
         }
         ansArr[index] = ans;
         setAnswers(ansArr);
-        console.log(ansArr)
-        console.log(answers)
     }
 
     const resetAnswers = () => {setAnswers([])}
@@ -54,7 +59,7 @@ export default function AnswerSurvey(){
     useEffect(() => {
         const fetchSurveyQuestions = async () => {
             try{
-                const result = await BaseAxios(`/surveys/${id}/questions`);
+                const result = await BaseAxios.get(`/surveys/${id}/questions`);
                 setQuestions([...result.data.questions])
                 //making base for answers
                 const initialAnswers = result.data.questions.map((question) => ({
@@ -63,9 +68,18 @@ export default function AnswerSurvey(){
                     answer: "",
                 }));
                 setAnswers(initialAnswers);
-                console.log(answers)
+                
+                setLoadInfo({status: "success", msg: "Success retriving data"})
+                setTimeout(()=>{
+                    setLoadInfo({status: "closed", msg: ""})
+                }, 700)
             }catch(err){
                 console.log("Error fetching survey questions", err);
+
+                setLoadInfo({status: "error", msg: "Error retriving data"})
+                setTimeout(()=>{
+                    setLoadInfo({status: "closed", msg: ""})
+                }, 700)
             }
         }
         fetchSurveyQuestions();
@@ -74,6 +88,7 @@ export default function AnswerSurvey(){
     const handleSubmitAnswer = async () =>{
         console.log("answers: ", answers)
         try{
+            setLoadInfo({status: "loading", msg: "Saving answers..."})
             const answersPromises = answers.map( async (answer) => {
                 try{
                     const result = await BaseAxios.post(`/surveys/${id}/answers`,{...answer});
@@ -84,9 +99,18 @@ export default function AnswerSurvey(){
             await Promise.all(answersPromises);
             console.log("All answers added successfully", answersPromises)
             resetAnswers()
-            navigate("/", {replace: true})
+            setLoadInfo({status: "success", msg: "Success saving answers"})
+                setTimeout(()=>{
+                    setLoadInfo({status: "closed", msg: ""})
+                }, 800)
+                navigate("/", {replace: true})
         }catch(err){
             console.log(err);
+
+            setLoadInfo({status: "error", msg: "Error saving answers"})
+                setTimeout(()=>{
+                    setLoadInfo({status: "closed", msg: ""})
+                }, 700)
         }
 
     }

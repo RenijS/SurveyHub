@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Container from "react-bootstrap/esm/Container";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import { useParams } from "react-router-dom";
 import BaseAxios from "../../api/BaseAxios";
+import { LoadContext } from "../../context/LoadContext";
 
 export default function StatsPage(props){
+
+    const {setLoadInfo} = useContext(LoadContext)
 
     const {id} = useParams();
 
@@ -15,6 +18,7 @@ export default function StatsPage(props){
     //getting questions
     useEffect(() => {
     const fetchData = async () => {
+        setLoadInfo({status: "loading", msg: "Retriving data..."})
         try {
             //const questionsResponse = await BaseAxios.get(`/surveys/${id}/questions`);
             //setQuestions(questionsResponse.data.questions);
@@ -23,6 +27,11 @@ export default function StatsPage(props){
             setQuestions(questions);
         } catch (error) {
             console.log("Error retrieving questions:", error);
+
+            setLoadInfo({status: "error", msg: "error retriving data"})
+            setTimeout(()=>{
+                setLoadInfo({status: "closed", msg: ""})
+            }, 800)
         }
     };
 
@@ -39,8 +48,17 @@ export default function StatsPage(props){
                 const answersResponse = await BaseAxios.get(`/surveys/${id}/answers/${question.id}`);
                 console.log(answersResponse.data.answers)
                 setAnswers((prevData) => [...prevData, ...answersResponse.data.answers]);
+                setLoadInfo({status: "success", msg: "success retriving data"})
+                setTimeout(()=>{
+                    setLoadInfo({status: "closed", msg: ""})
+                }, 800)
             } catch (error) {
                 console.log("Error retrieving answers:", error);
+
+                setLoadInfo({status: "error", msg: "error retriving data"})
+                setTimeout(()=>{
+                    setLoadInfo({status: "closed", msg: ""})
+                }, 800)
             }
         });
     };

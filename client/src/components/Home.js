@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from "react";
+import React, {useContext, useEffect, useState } from "react";
 import Container from "react-bootstrap/esm/Container";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -7,8 +7,12 @@ import CreatorPage from "./creator/CreatorPage";
 import TakerPage from "./taker/TakerPage";
 import { SurveysContext } from "../context/SurveysContext";
 import BaseAxios from "../api/BaseAxios";
+import { LoadContext } from "../context/LoadContext";
 
 export default function Home(){
+
+    const {setLoadInfo} = useContext(LoadContext)
+
     const [isCreator, setIsCreator] = useState(true);
 
     const [surveys, setSurveys] = useState([])
@@ -22,11 +26,22 @@ export default function Home(){
     useEffect( () => {
         const fetchData = async () =>{
             try{
+                setLoadInfo({status: "loading", msg: "Retriving all the available surveys"})
                 const result = await BaseAxios.get("/surveys/")
                 console.log(result)
                 setSurveys(result.data.data.surveys);
+                setLoadInfo({status: "success", msg: "Surveys retrived"})
+                //delaying
+                setTimeout(() => {
+                    setLoadInfo({ status: "closed", msg: "" });
+                  }, 800);
             }catch(err){
                 console.log(err)
+                setLoadInfo({status: "error", msg: "Error retriving surveys"})
+                //delaying
+                setTimeout(() => {
+                    setLoadInfo({ status: "closed", msg: "" });
+                  }, 800);
             }
         }
         fetchData()

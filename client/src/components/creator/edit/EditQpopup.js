@@ -4,8 +4,6 @@ import Card from 'react-bootstrap/Card';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Form from 'react-bootstrap/Form';
 import Button from "react-bootstrap/esm/Button";
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import Slider from "../create/Qcard/Slider";
 import ChoicesCard from "../create/Qcard/ChoicesCard";
 import BaseAxios from "../../../api/BaseAxios";
@@ -25,7 +23,7 @@ export default function EditQpopup({id, updateQuestions, question, handleQuestio
     }
 
     return (
-    <Container className="popup editContainer">
+    <Container className="editContainer">
         <Card className="mt-5 py-2">
             <Card.Body>
                 <Card.Title>Edit Question:</Card.Title>

@@ -7,11 +7,15 @@ import Col from 'react-bootstrap/Col';
 import Button from 'react-bootstrap/Button';
 import SurveyCard from "../SurveyCard";
 import BaseAxios from "../../api/BaseAxios";
+import { LoadContext } from "../../context/LoadContext";
 
 export default function CreatorPage(props){
     const {surveys, handleRemoveSurvey} = useContext(SurveysContext);
+    const {setLoadInfo} = useContext(LoadContext);
 
     const handleDeleteSurvey = async (surveyId, index) => {
+        setLoadInfo({status: "loading", msg: "Deleting survey data..."});
+
         await BaseAxios.delete(`/surveys/${surveyId}/questions`)
         .then(async () => {
             console.log("All the question are deleted")
@@ -19,12 +23,26 @@ export default function CreatorPage(props){
                 const result = await BaseAxios.delete(`/surveys/${surveyId}`)
                 console.log("Survey deleted", result);
                 handleRemoveSurvey(index)
+
+                setLoadInfo({status: "success", msg: "Survey Deleted."})
+                //delaying
+                setTimeout(()=>{
+                    setLoadInfo({status: "closed", msg: ""})
+                }, 800)
             }catch(err){
                 console.log("Error deleting survey", err);
+
+                setLoadInfo({status: "error", msg: "Error deleting questions."})
+                //delaying
+                setTimeout(()=>{
+                    setLoadInfo({status: "closed", msg: ""})
+                }, 800)
             }
         })
         .catch(err => {
             console.log("Error deleting questions", err)
+            
+            setLoadInfo({status: "error", msg: "Error deleting survey."})
         })
     }
 

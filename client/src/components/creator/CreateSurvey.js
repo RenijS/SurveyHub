@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Container from "react-bootstrap/esm/Container";
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
@@ -7,10 +7,13 @@ import SavedQcard from "./create/SavedQcard";
 import BaseAxios from "../../api/BaseAxios";
 import SurveyInfoCard from "./create/SurveyInfoCard";
 import { useNavigate } from "react-router-dom";
+import { LoadContext } from "../../context/LoadContext";
 
 export default function CreateSurvey(){
 
     const navigate = useNavigate();
+
+    const {setLoadInfo} = useContext(LoadContext)
 
     const [survey, setSurvey] = useState({title: "", desc: ""});
 
@@ -101,7 +104,10 @@ export default function CreateSurvey(){
     }
 
     const handleOnSubmit = async () => {
-        BaseAxios.post("/surveys", {
+
+        setLoadInfo({status: "loading", msg: "Saving survey data..."})
+
+        await BaseAxios.post("/surveys", {
             title: survey.title,
             description: survey.desc
         }).then(async (res) => {
@@ -120,15 +126,30 @@ export default function CreateSurvey(){
                     console.log("Question added", questionResponse.data);
                 } catch (err) {
                     console.log("Error adding question:", err);
+
+                    setLoadInfo({status: "error", msg: "Error saving question"})
+                    setTimeout(()=>{
+                        setLoadInfo({status: "closed", msg: ""})
+                    }, 800)
                 }
             });
             //Below code waits for all the promises in the questionPromises array to resolve
             await Promise.all(questionPromises);
             console.log("All questions added successfully");
             resetAllInputs()
-            navigate("/", {replace: true});
+
+            setLoadInfo({status: "success", msg: "Success saving survey, going back to main page"})
+            setTimeout(()=>{
+                setLoadInfo({status: "closed", msg: ""})
+                navigate("/", {replace: true});
+            }, 900)
         }).catch(err => {
             console.log("Error adding survey:", err);
+
+            setLoadInfo({status: "error", msg: "Error saving survey"})
+            setTimeout(()=>{
+                setLoadInfo({status: "closed", msg: ""})
+            }, 800)
         })
       };
       

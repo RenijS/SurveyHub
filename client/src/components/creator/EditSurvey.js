@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Container from "react-bootstrap/esm/Container";
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
@@ -8,19 +8,27 @@ import SurveyInfoCard from "./create/SurveyInfoCard";
 import { useParams } from "react-router-dom";
 import Row from "react-bootstrap/esm/Row";
 import EditQpopup from "./edit/EditQpopup";
+import { LoadContext } from "../../context/LoadContext";
 
 export default function EditSurvey({setPopupActive, popupActive}){
 
     const {id} = useParams();
+    const {setLoadInfo} = useContext(LoadContext)
     const [survey, setSurvey] = useState({title:"", description: ""})
 
     useEffect(()=>{
         const fetchSurveyData = async () =>{
             try{
+                setLoadInfo({status: "loading", msg: "retriving survey data..."})
                 const result = await BaseAxios(`/surveys/${id}`);
                 setSurvey({...result.data.data.survey})
             }catch(err){
                 console.log("Error fetching survey data: ", err);
+
+                setTimeout({status: "error", msg: "error retriving survey data"})
+                setTimeout(()=>{
+                    setLoadInfo({status: "closed", msg: ""})
+                }, 800)
             }
         }
         fetchSurveyData();
@@ -40,8 +48,17 @@ export default function EditSurvey({setPopupActive, popupActive}){
             try{
                 const result = await BaseAxios(`/surveys/${id}/questions`);
                 setQuestions([...result.data.questions])
+                setLoadInfo({status: "success", msg: "Success retriving survey data"})
+                setTimeout(()=>{
+                    setLoadInfo({status: "closed", msg: ""})
+                }, 800)
             }catch(err){
                 console.log("Error fetching survey questions", err);
+
+                setLoadInfo({status: "error", msg: "Error retriving survey data"})
+                setTimeout(()=>{
+                    setLoadInfo({status: "closed", msg: ""})
+                }, 800)
             }
         }
         fetchSurveyQuestions();
@@ -145,7 +162,7 @@ export default function EditSurvey({setPopupActive, popupActive}){
                     <Card.Title style={{position:"relative"}}>
                         <SurveyInfoCard survey={survey}/>
                         {/* Invisible Wall so that inputs are not editable */}
-                        <Row className="invisibleWall" style={{position: "absolute", top: 0, bottom: 0, left: 0, right: 0}}></Row>
+                        <Row className="invisibleWall"></Row>
                     </Card.Title>
                 </Card.Body>
             </Card>
@@ -155,7 +172,7 @@ export default function EditSurvey({setPopupActive, popupActive}){
                                             <Card.Title style={{position:"relative"}}>
                                                 <SavedQcard index= {index} question={question}/>
                                                 {/* Invisible Wall so that inputs are not editable */}
-                                                <Row className="invisibleWall" style={{position: "absolute", top: 0, bottom: 0, left: 0, right: 0}}></Row>
+                                                <Row className="invisibleWall"></Row>
                                             </Card.Title>
                                             <Card.Title><Button onClick={() => {handleEditClicked({questionsArrIndex: index, ...question})}}>Edit</Button></Card.Title>
                                         </Card.Body>
