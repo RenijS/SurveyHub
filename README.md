@@ -4,7 +4,7 @@ A website for creating website, capturing meaningful data...
 
 ## Technology Stack
 
-  - Front-end: React.js, HTML, CSS
+  - Front-end: React.js, HTML, CSS, React-Bootstrap
   - Back-end: Node.js, Express.js
   - Database: PostgreSQL
   - Hosting: Render, Netlify
